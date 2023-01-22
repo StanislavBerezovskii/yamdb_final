@@ -103,7 +103,7 @@ sudo docker-compose exec web python manage.py loaddata fixtures.json
 GPL v3 (can check in gpl-3.0.md file)
 
 ## Автор
-Станислав Березовский
+Станислав Березовский.
 
 ## Развёрнутый проект
 http://51.250.66.109/api/v1/
