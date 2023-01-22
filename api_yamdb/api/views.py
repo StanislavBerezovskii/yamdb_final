@@ -1,34 +1,29 @@
-"""
-Вьюсеты api.
-"""
-from django.shortcuts import get_object_or_404
-from django.db import IntegrityError
-from django.core.mail import send_mail
-from django.contrib.auth.tokens import default_token_generator
-from django.db.models import Avg
-from django.conf import settings
-from django_filters.rest_framework import DjangoFilterBackend
-
-from rest_framework import viewsets, filters, status, mixins
-from rest_framework.filters import SearchFilter
-from rest_framework.views import APIView
-from rest_framework.serializers import ValidationError
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.pagination import PageNumberPagination
-
 from api.filters import TitleFilter
+from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.db import IntegrityError
+from django.db.models import Avg
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, mixins, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import AccessToken
+from reviews.models import Category, Genre, Review, Title
 from users.models import User
-from reviews.models import Title, Category, Genre, Review
-from .serializers import (
-    UserSerializer, SignUpSerializer, TokenSerializer,
-    TitleListSerializer, TitleCreateSerializer, CategorySerializer,
-    GenreSerializer, ReviewSerializer, CommentSerializer
-)
+
 from .permissions import (IsAdminOrSuperuser, IsAdminSuperUserOrReadOnly,
                           IsStaffAuthorOrReadOnly)
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer, SignUpSerializer,
+                          TitleCreateSerializer, TitleListSerializer,
+                          TokenSerializer, UserSerializer)
 
 
 class ListCreateDeleteViewSet(mixins.ListModelMixin,

@@ -6,13 +6,13 @@ from django.core.exceptions import ValidationError
 def validate_username(username):
     """Проверить username на допустимость."""
 
-    PATTERN = re.compile(r'^[\w.@+-]+\Z')
+    pattern = re.compile(r'^[\w.@+-]+\Z')
 
     if username.lower() == "me":
         raise ValidationError(
             message="Использовать имя 'me' в качестве username запрещено. "
         )
-    if not PATTERN.findall(username):
+    if not pattern.findall(username):
         raise ValidationError(
             "Username содержит некорректные символы."
         )
