@@ -19,10 +19,10 @@ services:
     volumes:
       # Контейнер web будет работать с данными, хранящиеся в томе static_value, 
       # через свою директорию /app/static/
-      - static_value:/app/api_yamdb/static/
+      - static_value:/app/static/
       # Данные, хранящиеся в томе media_value, будут доступны в контейнере web 
       # через директорию /app/media/
-      - media_value:/app/api_yamdb/media/
+      - media_value:/app/media/
     # «зависит от», 
     depends_on:
       - db
