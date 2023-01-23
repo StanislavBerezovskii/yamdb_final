@@ -17,13 +17,15 @@
 [![Practicum.Yandex](https://img.shields.io/badge/-Practicum.Yandex-464646?style=flat&logo=Practicum.Yandex&logoColor=56C0C0&color=008080)](https://practicum.yandex.ru/)
 
 
-## Workflow
+## Workflow:
+
 * tests - Проверка кода на соответствие стандарту PEP8 (с помощью пакета flake8) и запуск pytest. Дальнейшие шаги выполнятся только если push был в ветку master или main.
 * build_and_push_to_docker_hub - Сборка и доставка докер-образов на Docker Hub
 * deploy - Автоматический деплой проекта на боевой сервер. Выполняется копирование файлов из репозитория на сервер:
 * send_message - Отправка уведомления в Telegram
 
-### Подготовка для запуска workflow
+### Подготовка для запуска workflow:
+
 Создайте и активируйте виртуальное окружение, обновите pip:
 ```
 python3 -m venv venv
@@ -77,35 +79,39 @@ sudo apt install docker-compose
 sudo  docker-compose --version
 ```
 
-### После успешного деплоя:
+### После успешного деплоя убедитесь в корректной работе системы:
+
 Соберите статические файлы:
 ```
 sudo docker-compose exec -T web python manage.py collectstatic --no-input
 ```
 Примените миграции:
 ```
-sudo docker-compose exec -T web python manage.py migrate auth
-sudo docker-compose exec -T web python manage.py migrate --fake-initial --run-syncdb
+sudo docker-compose exec -T web python manage.py makemigrations
+sudo docker-compose exec -T web python manage.py migrate
 ```
 Создайте суперпользователя:
 ```
 sudo docker-compose exec web python manage.py createsuperuser
 ```
-Распакуйте данные для бд:
+Распакуйте данные для ДБ:
 ```
-sudo docker-compose exec web python manage.py import_csv_data users.csv category.csv genre.csv titles.csv genre_title.csv review.csv comments.csv
+sudo docker-compose exec web python manage.py csv_to_db
 ```
-или загрузите дамп бд:
+или загрузите файл дампа БД:
 ```
 sudo docker-compose exec web python manage.py loaddata fixtures.json
 ```
-## Open Source License
+## Open Source License:
+
 GPL v3 (can check in gpl-3.0.md file)
 
-## Автор
+## Автор:
+
 Станислав Березовский
 
-## Развёрнутый проект
+## Ссылки на развёрнутый проект:
+
 http://84.201.164.63/api/v1/
 http://84.201.164.63/admin/
 http://84.201.164.63/redoc/
