@@ -1,6 +1,6 @@
-# CI/CD для проекта API YAMDB
+# CI/CD for API YAMDB project
 
-## Технологический стек
+## Technology Stack
 [![yamdb_final](https://github.com/StanislavBerezovskii/yamdb_final/workflows/yamdb_final/badge.svg)](https://github.com/StanislavBerezovskii/yamdb_final/actions/workflows/yamdb_workflow.yml)
 [![Python](https://img.shields.io/badge/-Python-464646?style=flat&logo=Python&logoColor=56C0C0&color=008080)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/-Django-464646?style=flat&logo=Django&logoColor=56C0C0&color=008080)](https://www.djangoproject.com/)
@@ -19,86 +19,85 @@
 
 ## Workflow:
 
-* tests - Проверка кода на соответствие стандарту PEP8 (с помощью пакета flake8) и запуск pytest. Дальнейшие шаги выполнятся только если push был в ветку master или main.
-* build_and_push_to_docker_hub - Сборка и доставка докер-образов на Docker Hub
-* deploy - Автоматический деплой проекта на боевой сервер. Выполняется копирование файлов из репозитория на сервер:
-* send_message - Отправка уведомления в Telegram
+* tests - Check the code for PEP8 compliance (using the flake8 package) and runs pytest. Further steps will only be executed if the push was to the master or main branch.
+* build_and_push_to_docker_hub - Builds and delivers Docker images to Docker Hub
+* deploy - Automatically deploys the project to the production server. Files are copied from the DockerHub repository to the server
+* send_message - Sends a notification to Telegram
 
-### Подготовка для запуска workflow:
+### Preparing to start workflow:
 
-Создайте и активируйте виртуальное окружение, обновите pip:
+Create and activate the virtual environment, update pip:
 ```
 python3 -m venv venv
 . venv/bin/activate
 python3 -m pip install --upgrade pip
 ```
-Запустите автотесты:
+Run autotests:
 ```
 pytest
 ```
-Отредактируйте файл `nginx/default.conf` и в строке `server_name` впишите IP виртуальной машины (сервера).  
-Скопируйте подготовленные файлы `docker-compose.yaml` и `nginx/default.conf` из вашего проекта на сервер:
-
-Зайдите в репозиторий на локальной машине и отправьте файлы на сервер.
+Edit the `nginx/default.conf` file and enter the IP of the virtual machine (server) in the `server_name` line.
+Copy the prepared `docker-compose.yaml` and `nginx/default.conf` files from your project to the server:
+Login to the repository on your local machine and upload files to the server:
 ```
 scp ./infra/docker-compose.yaml <username>@<host>:/home/<username>/docker-compose.yaml
 sudo mkdir nginx
 scp default.conf <username>@<host>:/home/<username>/nginx/default.conf
 ```
-В репозитории на Гитхабе добавьте данные в `Settings - Secrets - Actions secrets`:
+In the GitHub repository, add the data to `Settings - Secrets - Actions secrets`:
 ```
-DOCKER_USERNAME - имя пользователя в DockerHub
-DOCKER_PASSWORD - пароль пользователя в DockerHub
-HOST - ip-адрес сервера
-USER - пользователь
-SSH_KEY - приватный ssh-ключ (публичный должен быть на сервере)
-PASSPHRASE - кодовая фраза для ssh-ключа
+DOCKER_USERNAME - DockerHub username
+DOCKER_PASSWORD - DockerHub user password
+HOST - server ip address
+USER - user
+SSH_KEY - private ssh key (public ssh key must be on the server)
+PASSPHRASE - passphrase for ssh key
 DB_ENGINE - django.db.backends.postgresql
 DB_HOST - db
 DB_PORT - 5432
-SECRET_KEY - секретный ключ приложения django (необходимо чтобы были экранированы или отсутствовали скобки)
-DEBUG - включен ли режим разработки (True или False)
-TELEGRAM_TO - id своего телеграм-аккаунта (можно узнать у @userinfobot, команда /start)
-TELEGRAM_TOKEN - токен бота (получить токен можно у @BotFather, /token, имя бота)
-DB_NAME - postgres (по умолчанию)
-POSTGRES_USER - postgres (по умолчанию)
-POSTGRES_PASSWORD - postgres (по умолчанию)
+SECRET_KEY - django app secret key (try avoiding brackets if possible)
+DEBUG - whether development mode is enabled (True or False)
+TELEGRAM_TO - id of your telegram account (you can get it from @userinfobot, command: /start)
+TELEGRAM_TOKEN - bot token (you can get a token from @BotFather, /token, bot name)
+DB_NAME - postgres (default)
+POSTGRES_USER - postgres (default)
+POSTGRES_PASSWORD - postgres (default)
 ```
 
-## Как запустить проект на сервере:
+## Running the project on the production server:
 
 
-Установите Docker и Docker-compose:
+Install Docker and Docker-compose:
 ```
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 sudo apt install docker-compose
 ```
-Проверьте корректность установки Docker-compose:
+Check that Docker-Compose is installed correctly:
 ```
 sudo  docker-compose --version
 ```
 
-### После успешного деплоя убедитесь в корректной работе системы:
+### After successful deployment, make sure the system is working correctly:
 
-Соберите статические файлы:
+Collect static files:
 ```
 sudo docker-compose exec -T web python manage.py collectstatic --no-input
 ```
-Примените миграции:
+Apply migrations:
 ```
 sudo docker-compose exec -T web python manage.py makemigrations
 sudo docker-compose exec -T web python manage.py migrate
 ```
-Создайте суперпользователя:
+Create a superuser:
 ```
 sudo docker-compose exec web python manage.py createsuperuser
 ```
-Распакуйте данные для ДБ:
+Unpack the data for the DB:
 ```
 sudo docker-compose exec web python manage.py csv_to_db
 ```
-или загрузите файл дампа БД:
+or download the DB dump file:
 ```
 sudo docker-compose exec web python manage.py loaddata fixtures.json
 ```
@@ -106,12 +105,12 @@ sudo docker-compose exec web python manage.py loaddata fixtures.json
 
 GPL v3 (can check in gpl-3.0.md file)
 
-## Автор:
+## Author:
 
-Станислав Березовский
+Stanislav Berezovskii
 
-## Ссылки на развёрнутый проект:
+## Project URLs:
 
-http://84.201.164.63/api/v1/
-http://84.201.164.63/admin/
-http://84.201.164.63/redoc/
+http://<server-ip>/api/v1/
+http://<server-ip>/admin/
+http://<server-ip>/redoc/
